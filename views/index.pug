@@ -47,5 +47,6 @@ html
 		script(src="/jspm_packages/system.js")
 		script(src="/config.js")
 		script.
-			var from = "!{from}";
+			var from = !{fromForJs}; // 最开始的时候有双引号 "!{fromForJs}",为了更好验证JSON.stringify
+			console.log('fromForJs:', from)
 			//- System.import('scripts/login');

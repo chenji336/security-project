@@ -74,5 +74,9 @@ XSS防御：
 - 转译成`HTML实体`，[相应字符实体表](https://www.w3school.com.cn/html/html_entities.asp)
   - HTML内容转译，只显示text内容，只需要 `< => $gt; > => $lt;`
 	- HTML属性转译，主要是 单引号、双引号、空格
+	- javascript代码转译：如果用的是属性转译js显示就有问题
+	  - `"` => `\"`,`'` => `\'`,
+		- `\` => `\\`,情型：from=beijing\";alert(1);//"， `//`代表注释
+		- 终极解决方法： JSON.stringify(xxx)，这样外面就默认是带有双引号了
 
 

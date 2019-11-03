@@ -9,7 +9,7 @@ function escapeHtml (str) {
 	str = str.replace(/&/g, '&amp;'); // html5之后是可以不需要转译的，不过最好加上，并且要放在第一位
 	str = str.replace(/</g, '&lt;');
 	str = str.replace(/>/g, '&gt;');
-	str = str.replace(/"/g, '&quto;');
+	str = str.replace(/"/g, '&quot;');
 	str = str.replace(/'/g, '&#39;'); // 单引号也需要转译(如果index.pug src使用是单引号的话)
 
 	// 空格也需要转译(如果index.pug src没有使用引号的话)
@@ -33,6 +33,18 @@ function escapeHtml (str) {
 // 	return str;
 // }
 
+// 转译js中的XSS
+// 更好的替换方法 JSON.stringify
+// function escapeForJs(str) {
+// 	if (!str) {
+// 		return '';
+// 	}
+// 	str = str.replace(/\//g, '\\\\'); // 斜杠也要转译，适用于这种情况 from=beijing\";alert(1);//"
+// 	str = str.replace(/"/g, '\\"'); // 两个\ 是因为\也需要转译,可以去掉一个查看效果
+// 	// console.log('str:', str);  // 如果没有 两个\ ，第一次转化的时候就有问题
+// 	return str;
+// }
+
 exports.index = async function(ctx, next){
 	const connection = connectionModel.getConnection();
 	const query = bluebird.promisify(connection.query.bind(connection));
@@ -45,8 +57,9 @@ exports.index = async function(ctx, next){
 	ctx.render('index', {
 		posts,
 		comments,
-		from:escapeHtml(ctx.query.from) || '',
-		avatarId: escapeHtmlProperty(ctx.query.avatarId) || ''
+		from: escapeHtml(ctx.query.from) || '',
+		fromForJs: JSON.stringify(ctx.query.from) || '',
+		avatarId: escapeHtml(ctx.query.avatarId) || ''
 	});
 	connection.end();
 };
