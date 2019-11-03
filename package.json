@@ -24,7 +24,8 @@
     "koa-static": "^3.0.0",
     "mysql": "^2.13.0",
     "nodemon": "^1.18.10",
-    "sequelize": "^3.30.4"
+    "sequelize": "^3.30.4",
+    "xss": "^1.0.6"
   },
   "jspm": {
     "directories": {

@@ -76,34 +76,45 @@ exports.index = async function(ctx, next){
 // }
 
 // 白名单
+// function xssFilter(html) {
+// 	if (!html) {
+// 		return '';
+// 	}
+// 	let $ = require('cheerio'); // jquery core server 代码
+// 	$ = $.load(html);
+// 	const whiteList = {
+// 		img: ['src'], // onerror就会去除
+// 		a: ['href'],
+// 		p: ['color', 'size'],
+// 		font: ['color', 'size'],
+// 		b: ['color', 'size']
+// 	};
+// 	console.log('html:', $('body').html());
+// 	$('body>*').each((index, element) => { // 如果<span>xxx</span>ddd，那么ddd不会进入循环
+// 		// console.log(index, element);
+// 		if (!whiteList[element.name]) {
+// 			$(element).remove();
+// 			return ;
+// 		}
+// 		Object.keys(element.attribs).forEach(attr => {
+// 			if (!whiteList[element.name].includes(attr)) {
+// 				$(element).attr(attr, null);
+// 			}
+// 		});
+// 	});
+// 	console.log('html:', $('body').html());
+// 	return $('body').html();
+// }
+
+// 使用白名单第三方库 xss
+// 好处：更快捷，更全
+// 坏处：定制化需要自己去学习相应api，还有可能没有
 function xssFilter(html) {
 	if (!html) {
 		return '';
 	}
-	let $ = require('cheerio'); // jquery core server 代码
-	$ = $.load(html);
-	const whiteList = {
-		img: ['src'], // onerror就会去除
-		a: ['href'],
-		p: ['color', 'size'],
-		font: ['color', 'size'],
-		b: ['color', 'size']
-	};
-	console.log('html:', $('body').html());
-	$('body>*').each((index, element) => { // 如果<span>xxx</span>ddd，那么ddd不会进入循环
-		// console.log(index, element);
-		if (!whiteList[element.name]) {
-			$(element).remove();
-			return ;
-		}
-		Object.keys(element.attribs).forEach(attr => {
-			if (!whiteList[element.name].includes(attr)) {
-				$(element).attr(attr, null);
-			}
-		});
-	});
-	console.log('html:', $('body').html());
-	return $('body').html();
+	const xss = require('xss');
+	return xss(html);
 }
 
 exports.post = async function(ctx, next){
