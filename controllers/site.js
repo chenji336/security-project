@@ -64,6 +64,16 @@ exports.index = async function(ctx, next){
 	connection.end();
 };
 
+function xssFilter(html) {
+	if (!html) {
+		return '';
+	}
+	html = html.replace(/<\s*\/?script\s*>/g,''); // 黑名单
+	html = html.replace(/javascript:[^'"]*/g,''); // 黑名单:<a href="javascript:alert(1)">你好</a>
+	html = html.replace(/onerror\s*=\s*['"][^'"]*['"]/g,''); // 黑名单:<img src="1" onerror="alert(1)" />
+	return html;
+}
+
 exports.post = async function(ctx, next){
 	try{
 		console.log('enter post');
@@ -75,10 +85,12 @@ exports.post = async function(ctx, next){
 			`select * from post where id = "${id}"`
 		);
 		let post = posts[0];
-
 		const comments = await query(
 			`select comment.*,user.username from comment left join user on comment.userId = user.id where postId = "${post.id}" order by comment.createdAt desc`
 		);
+		comments.forEach(comment => {
+			comment.content = xssFilter(comment.content);
+		});
 		if(post){
 			ctx.render('post', {post, comments});
 		}else{

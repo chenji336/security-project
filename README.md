@@ -71,12 +71,15 @@ XSS攻击注入点：
 XSS防御：
 
 - 浏览器自带的会防御注入到`HTML节点和属性`的XSS攻击,**但是通过url注入到js代码的工具不会防御**(demo不会是因为关闭了X-XSS-Protection)
-- 转译成`HTML实体`，[相应字符实体表](https://www.w3school.com.cn/html/html_entities.asp)
+- 转译成`HTML实体`，[相应字符实体表](https://www.w3school.com.cn/html/html_entities.asp) `site.js查看具体内容`
   - HTML内容转译，只显示text内容，只需要 `< => $gt; > => $lt;`
 	- HTML属性转译，主要是 单引号、双引号、空格
 	- javascript代码转译：如果用的是属性转译js显示就有问题
 	  - `"` => `\"`,`'` => `\'`,
 		- `\` => `\\`,情型：from=beijing\";alert(1);//"， `//`代表注释
 		- 终极解决方法： JSON.stringify(xxx)，这样外面就默认是带有双引号了
+	- 富文本`过滤`: 需要保留一些html标签，所以不能转译，而是过滤
+	  - 黑名单过滤（变种太多了，所以写的不一定完整，不推荐使用）`site.js查看具体内容`
+	  - 白名单进行过滤（输入的时候进行过滤性能消耗比输出少，因为输入时候过滤只要进行一次）
 
 
