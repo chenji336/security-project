@@ -58,7 +58,8 @@ exports.index = async function(ctx, next){
 		posts,
 		comments,
 		from: escapeHtml(ctx.query.from) || '',
-		fromForJs: JSON.stringify(ctx.query.from) || '',
+		// fromForJs: (ctx.query.from) || '',
+		fromForJs: JSON.stringify(ctx.query.from.replace('</script>', '<\\/script>')) || '', // 直接使用JSON.stringify就有bug（from有 </script>则会报错,所以直接替换掉了） https://stackoverflow.com/questions/10154514/unterminated-string-literal-invalid-or-unexpected-token
 		avatarId: escapeHtml(ctx.query.avatarId) || ''
 	});
 	connection.end();

@@ -3,6 +3,7 @@
 ## 环境搭建
 
 #### 安装mysql
+
 安装community版本，这个版本免费
 [最终下载地址](https://dev.mysql.com/downloads/file/?id=484914),记得选择不要登陆下载
 root Chenji336.
@@ -32,6 +33,7 @@ drop table test; 删除表
 exit; 退出项目
 
 #### 安装执行
+
 1. npm i -g jspm
 2. jspm install
 3. npm install
@@ -40,6 +42,7 @@ exit; 退出项目
 ## 前端XSS
 
 #### XSS介绍
+
 XSS: Cross site scripting,跨站脚本攻击
 > 本来应该叫做CSS，但是css常常代表样式，所以就改用X
 
@@ -73,14 +76,19 @@ XSS防御：
 - 浏览器自带的会防御注入到`HTML节点和属性`的XSS攻击,**但是通过url注入到js代码的工具不会防御**(demo不会是因为关闭了X-XSS-Protection)
 - 转译成`HTML实体`，[相应字符实体表](https://www.w3school.com.cn/html/html_entities.asp) `site.js查看具体内容`
   - HTML内容转译，只显示text内容，只需要 `< => $gt; > => $lt;`
-	- HTML属性转译，主要是 单引号、双引号、空格
-	- javascript代码转译：如果用的是属性转译js显示就有问题
-	  - `"` => `\"`,`'` => `\'`,
-		- `\` => `\\`,情型：from=beijing\";alert(1);//"， `//`代表注释
-		- 终极解决方法： JSON.stringify(xxx)，这样外面就默认是带有双引号了
-	- 富文本`过滤`: 需要保留一些html标签，所以不能转译，而是过滤
-	  输入的时候进行过滤性能消耗比输出少，因为输入时候过滤只要进行一次）,不过为了演示，我们代码是在输出的地方进行了过滤
-	  - 黑名单过滤（变种太多了，所以写的不一定完整，不推荐使用）`site.js查看具体内容`
-	  - 白名单进行过滤
+  - HTML属性转译，主要是 单引号、双引号、空格
+  - javascript代码转译：如果用的是属性转译js显示就有问题
+  	- `"` => `\"`,`'` => `\'`,
+  	- `\` => `\\`,情型：from=beijing\";alert(1);//"， `//`代表注释
+  	- 终极解决方法： JSON.stringify(xxx)，这样外面就默认是带有双引号了
+  - 富文本`过滤`: 需要保留一些html标签，所以不能转译，而是过滤
+  	输入的时候进行过滤性能消耗比输出少，因为输入时候过滤只要进行一次）,不过为了演示，我们代码是在输出的地方进行了过滤
+  	- 黑名单过滤（变种太多了，所以写的不一定完整，不推荐使用）`site.js查看具体内容`
+  	- 白名单进行过滤
 
 
+#### CSP
+
+内容安全策略（content security policy)
+
+http头字段来进行限制
