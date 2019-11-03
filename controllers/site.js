@@ -1,6 +1,12 @@
 const bluebird = require('bluebird');
 const connectionModel = require('../models/connection');
 
+function escapeHtml (str) {
+	str = str.replace(/</g, '&lt;');
+	str = str.replace(/>/g, '&gt;');
+	return str;
+}
+
 exports.index = async function(ctx, next){
 	const connection = connectionModel.getConnection();
 	const query = bluebird.promisify(connection.query.bind(connection));
@@ -12,7 +18,7 @@ exports.index = async function(ctx, next){
 		);
 	ctx.render('index', {
 		posts,
-		comments, from:(ctx.query.from) || '',
+		comments, from:escapeHtml(ctx.query.from) || '',
 		avatarId:ctx.query.avatarId || ''
 	});
 	connection.end();
