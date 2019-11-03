@@ -64,14 +64,46 @@ exports.index = async function(ctx, next){
 	connection.end();
 };
 
+// // 黑名单
+// function xssFilter(html) {
+// 	if (!html) {
+// 		return '';
+// 	}
+// 	html = html.replace(/<\s*\/?script\s*>/g,''); // 黑名单
+// 	html = html.replace(/javascript:[^'"]*/g,''); // 黑名单:<a href="javascript:alert(1)">你好</a>
+// 	html = html.replace(/onerror\s*=\s*['"][^'"]*['"]/g,''); // 黑名单:<img src="1" onerror="alert(1)" />
+// 	return html;
+// }
+
+// 白名单
 function xssFilter(html) {
 	if (!html) {
 		return '';
 	}
-	html = html.replace(/<\s*\/?script\s*>/g,''); // 黑名单
-	html = html.replace(/javascript:[^'"]*/g,''); // 黑名单:<a href="javascript:alert(1)">你好</a>
-	html = html.replace(/onerror\s*=\s*['"][^'"]*['"]/g,''); // 黑名单:<img src="1" onerror="alert(1)" />
-	return html;
+	let $ = require('cheerio'); // jquery core server 代码
+	$ = $.load(html);
+	const whiteList = {
+		img: ['src'], // onerror就会去除
+		a: ['href'],
+		p: ['color', 'size'],
+		font: ['color', 'size'],
+		b: ['color', 'size']
+	};
+	console.log('html:', $('body').html());
+	$('body>*').each((index, element) => { // 如果<span>xxx</span>ddd，那么ddd不会进入循环
+		// console.log(index, element);
+		if (!whiteList[element.name]) {
+			$(element).remove();
+			return ;
+		}
+		Object.keys(element.attribs).forEach(attr => {
+			if (!whiteList[element.name].includes(attr)) {
+				$(element).attr(attr, null);
+			}
+		});
+	});
+	console.log('html:', $('body').html());
+	return $('body').html();
 }
 
 exports.post = async function(ctx, next){
