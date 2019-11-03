@@ -71,7 +71,8 @@ XSS攻击注入点：
 XSS防御：
 
 - 浏览器自带的会防御注入到`HTML节点和属性`的XSS攻击,**但是通过url注入到js代码的工具不会防御**(demo不会是因为关闭了X-XSS-Protection)
-- 转译成`HTML实体`
+- 转译成`HTML实体`，[相应字符实体表](https://www.w3school.com.cn/html/html_entities.asp)
   - HTML内容转译，只显示text内容，只需要 `< => $gt; > => $lt;`
+	- HTML属性转译，主要是 单引号、双引号、空格
 
 
