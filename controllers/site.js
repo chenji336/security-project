@@ -6,17 +6,9 @@ function escapeHtml (str) {
 	if (!str) {
 		return '';
 	}
+	str = str.replace(/&/g, '&amp;'); // html5之后是可以不需要转译的，不过最好加上，并且要放在第一位
 	str = str.replace(/</g, '&lt;');
 	str = str.replace(/>/g, '&gt;');
-	return str;
-}
-
-// 转译HTML属性（正式环境应该跟上面合并）
-function escapeHtmlProperty(str) {
-	if (!str) {
-		return '';
-	}
-	// str = str.replace(/&/g, '&amp;'); // html5之后是可以不需要转译的，不过最好加上
 	str = str.replace(/"/g, '&quto;');
 	str = str.replace(/'/g, '&#39;'); // 单引号也需要转译(如果index.pug src使用是单引号的话)
 
@@ -25,6 +17,21 @@ function escapeHtmlProperty(str) {
 	// str = str.replace(/ /g, '&nbsp;');
 	return str;
 }
+
+// 转译HTML属性（正式环境应该跟上面合并）
+// function escapeHtmlProperty(str) {
+// 	if (!str) {
+// 		return '';
+// 	}
+// 	// str = str.replace(/&/g, '&amp;'); // html5之后是可以不需要转译的，不过最好加上
+// 	str = str.replace(/"/g, '&quto;');
+// 	str = str.replace(/'/g, '&#39;'); // 单引号也需要转译(如果index.pug src使用是单引号的话)
+
+// 	// 空格也需要转译(如果index.pug src没有使用引号的话)
+// 	// 但是不建议转译，因为html中多个空格会转变成一个，如果转译了会有问题，所以写html属性要求有引号
+// 	// str = str.replace(/ /g, '&nbsp;');
+// 	return str;
+// }
 
 exports.index = async function(ctx, next){
 	const connection = connectionModel.getConnection();
