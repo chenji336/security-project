@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "bluebird": "^3.5.0",
+    "ccap": "^0.6.10",
     "cheerio": "^1.0.0-rc.3",
     "koa": "^2.2.0",
     "koa-bodyparser": "^4.2.0",

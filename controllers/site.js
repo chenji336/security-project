@@ -1,5 +1,6 @@
 const bluebird = require('bluebird');
 const connectionModel = require('../models/connection');
+const captcha = require('../tools/captcha');
 
 // 转译HTML内容
 function escapeHtml (str) {
@@ -161,6 +162,13 @@ exports.addComment = async function(ctx, next){
 		const connection = connectionModel.getConnection();
 		const query = bluebird.promisify(connection.query.bind(connection));
 		const userId = ctx.cookies.get('userId') || -1;
+		const captchaContent = data.captcha;
+
+		// 如果验证码是空或则重来没有访问过验证码也是错误
+		if (!captchaContent || !captcha.validateCaptcha(userId, captchaContent)) {
+			console.log('captchaContent', captchaContent);
+			throw new Error('发送的验证码错误');
+		}
 		const result = await query(
 			`insert into comment(userId,postId,content,createdAt) values("${userId}", "${data.postId}", "${data.content}",${connection.escape(new Date())})`
 		);

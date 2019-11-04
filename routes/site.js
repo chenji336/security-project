@@ -4,6 +4,7 @@ const router = new Router({
 });
 
 const site = require('../controllers/site');
+const captcha = require('../tools/captcha');
 
 router.all('/*', async function(ctx, next){
 	console.log('enter site.js');
@@ -16,6 +17,7 @@ router.get('/', site.index);
 router.get('/post/:id', site.post);
 router.post('/post/addComment', site.addComment);
 router.get('/ajax/addComment', site.addComment); // 测试 CSRF
+router.get('/captcha', captcha.getCaptcha);
 
 
 module.exports = router;
