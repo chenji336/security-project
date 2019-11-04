@@ -153,7 +153,7 @@ exports.post = async function(ctx, next){
 exports.addComment = async function(ctx, next){
 	try{
 		let data;
-		if (ctx.request.method === 'post') {
+		if (ctx.request.method === 'POST') {
 			data = ctx.request.body;
 		} else {
 			data = ctx.request.query;
