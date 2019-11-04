@@ -59,7 +59,7 @@ exports.index = async function(ctx, next){
 		comments,
 		from: escapeHtml(ctx.query.from) || '',
 		// fromForJs: (ctx.query.from) || '',
-		fromForJs: JSON.stringify(ctx.query.from.replace('</script>', '<\\/script>')) || '', // 直接使用JSON.stringify就有bug（from有 </script>则会报错,所以直接替换掉了） https://stackoverflow.com/questions/10154514/unterminated-string-literal-invalid-or-unexpected-token
+		fromForJs: JSON.stringify(ctx.query.from && ctx.query.from.replace('</script>', '<\\/script>')) || '', // 直接使用JSON.stringify就有bug（from有 </script>则会报错,所以直接替换掉了） https://stackoverflow.com/questions/10154514/unterminated-string-literal-invalid-or-unexpected-token
 		avatarId: escapeHtml(ctx.query.avatarId) || ''
 	});
 	connection.end();
@@ -152,11 +152,17 @@ exports.post = async function(ctx, next){
 
 exports.addComment = async function(ctx, next){
 	try{
-		const data = ctx.request.body;
+		let data;
+		if (ctx.request.method === 'post') {
+			data = ctx.request.body;
+		} else {
+			data = ctx.request.query;
+		}
 		const connection = connectionModel.getConnection();
 		const query = bluebird.promisify(connection.query.bind(connection));
+		const userId = ctx.cookies.get('userId') || -1;
 		const result = await query(
-			`insert into comment(userId,postId,content,createdAt) values("${ctx.cookies.get('userId')}", "${data.postId}", "${data.content}",${connection.escape(new Date())})`
+			`insert into comment(userId,postId,content,createdAt) values("${userId}", "${data.postId}", "${data.content}",${connection.escape(new Date())})`
 		);
 		if(result){
 			ctx.redirect(`/post/${data.postId}`);

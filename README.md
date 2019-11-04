@@ -92,3 +92,9 @@ XSS防御：
 内容安全策略（content security policy)
 
 http头字段来进行限制
+
+## CSRF
+
+跨站请求伪造（Cross-site request forgery)
+
+攻击方式：诱惑用户点击第三方网站进入，然后发送 被攻击网站 请求（默认会携带cookie，所以以为是本人操作）

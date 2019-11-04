@@ -15,6 +15,7 @@ router.all('/*', async function(ctx, next){
 router.get('/', site.index);
 router.get('/post/:id', site.post);
 router.post('/post/addComment', site.addComment);
+router.get('/ajax/addComment', site.addComment); // 测试 CSRF
 
 
 module.exports = router;
