@@ -161,6 +161,19 @@ http头字段来进行限制
   - 格式：new Date() GMT
 - samesite: 相同的域名才能携带cookie
 
+#### cookies作用
+
+**登录用户凭证**
+
+使用userId做为凭证
+
+	缺点：明文，容易被串改，所以需要`加密`
+
+	改进：userId+签名，通过node自带的模块 crypt 进行加密
+
+
+
+
 
 
 

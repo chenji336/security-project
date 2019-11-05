@@ -1,6 +1,7 @@
 const bluebird = require('bluebird');
 const connectionModel = require('../models/connection');
 const captcha = require('../tools/captcha');
+const crypt = require('../tools/crypt');
 
 // 转译HTML内容
 function escapeHtml (str) {
@@ -189,6 +190,15 @@ exports.addComment = async function(ctx, next){
 		console.log('referer:', referer);
 		if (!/^https?:\/\/localhost/.test(referer)) {
 			throw new Error('referer来源错误');
+		}
+
+		// cookie验证是否串改
+		// 如果前端修改了cookie，那么ctx.cookies也是被修改的，所以可以获取到修改后的userId
+		const sign = ctx.cookies.get('sign');
+		const originSign = crypt.createCrypt(ctx.cookies.get('userId'));
+		console.log(ctx.cookies.get('userId'), sign);
+		if (sign !== originSign) {
+			throw new Error('报告！！cookie被串改了');
 		}
 
 		const result = await query(
