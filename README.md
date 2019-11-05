@@ -141,3 +141,26 @@ http头字段来进行限制
 验证发送请求的来源，通过 `request.headers.referer` 判断
 
 
+## 前端cookies问题
+
+#### cookies特性
+
+后端设置： set-cookie
+前端设置：
+- 添加：document.cookie='k1=v1;k2=v2;',再次访问发现只有k1=v1
+- 删除：document.cookie='k1=v1;expires:Tue Nov 05 2019 22:01:35 GMT+0800',时间设置小于当前就好
+
+特性(观察 chrome-application-cookie 对应的属性）：
+
+- host
+- path: 不同路径下面有不同cookie
+- secure： https才允许携带cookie
+- http-only：document.cookie 获取不到
+- expires：过期时间
+  - session代表本次会话，关闭才会过期
+  - 格式：new Date() GMT
+- samesite: 相同的域名才能携带cookie
+
+
+
+
