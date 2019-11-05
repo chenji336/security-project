@@ -136,4 +136,8 @@ http头字段来进行限制
 
 原理：同验证码，只是每次都不需要客户自己输入了
 
+### CSRF防御-referer
+
+验证发送请求的来源，通过 `request.headers.referer` 判断
+
 

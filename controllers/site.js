@@ -136,10 +136,13 @@ exports.post = async function(ctx, next){
 		comments.forEach(comment => {
 			comment.content = xssFilter(comment.content);
 		});
-		const csrfToken = Math.floor(Math.random() * 999999, 10);
-		ctx.cookies.set('csrfToken', csrfToken); // 这个不建议放到cookie里面，而是保存在缓存中更好，而且每个用户token都不一样（演示先这样）
+
+		// const csrfToken = Math.floor(Math.random() * 999999, 10);
+		// ctx.cookies.set('csrfToken', csrfToken); // 这个不建议放到cookie里面，而是保存在缓存中更好，而且每个用户token都不一样（演示先这样）
+
 		if(post){
-			ctx.render('post', {post, comments, csrfToken});
+			// ctx.render('post', {post, comments, csrfToken});
+			ctx.render('post', {post, comments});
 		}else{
 			ctx.status = 404;
 		}
@@ -173,12 +176,19 @@ exports.addComment = async function(ctx, next){
 		// }
 
 		// token验证
-		const csrfToken = data.csrfToken;
-		if (!csrfToken) {
-			throw new Error('token不能为空');
-		}
-		if (csrfToken !== ctx.cookies.get('csrfToken')) {
-			throw new Error('token不正确');
+		// const csrfToken = data.csrfToken;
+		// if (!csrfToken) {
+		// 	throw new Error('token不能为空');
+		// }
+		// if (csrfToken !== ctx.cookies.get('csrfToken')) {
+		// 	throw new Error('token不正确');
+		// }
+
+		// referer验证
+		const referer = ctx.request.headers.referer;
+		console.log('referer:', referer);
+		if (!/^https?:\/\/localhost/.test(referer)) {
+			throw new Error('referer来源错误');
 		}
 
 		const result = await query(
