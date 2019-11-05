@@ -2,6 +2,7 @@ const bluebird = require('bluebird');
 const connectionModel = require('../models/connection');
 const captcha = require('../tools/captcha');
 const crypt = require('../tools/crypt');
+const session = require('../tools/session');
 
 // 转译HTML内容
 function escapeHtml (str) {
@@ -167,7 +168,7 @@ exports.addComment = async function(ctx, next){
 		}
 		const connection = connectionModel.getConnection();
 		const query = bluebird.promisify(connection.query.bind(connection));
-		const userId = ctx.cookies.get('userId') || -1;
+		let userId = ctx.cookies.get('userId') || -1;
 
 		// 如果验证码是空或则重来没有访问过验证码也是错误
 		// const captchaContent = data.captcha;
@@ -194,12 +195,20 @@ exports.addComment = async function(ctx, next){
 
 		// cookie验证是否串改
 		// 如果前端修改了cookie，那么ctx.cookies也是被修改的，所以可以获取到修改后的userId
-		const sign = ctx.cookies.get('sign');
-		const originSign = crypt.createCrypt(ctx.cookies.get('userId'));
-		console.log(ctx.cookies.get('userId'), sign);
-		if (sign !== originSign) {
-			throw new Error('报告！！cookie被串改了');
+		// const sign = ctx.cookies.get('sign');
+		// const originSign = crypt.createCrypt(ctx.cookies.get('userId'));
+		// console.log(ctx.cookies.get('userId'), sign);
+		// if (sign !== originSign) {
+		// 	throw new Error('报告！！cookie被串改了');
+		// }
+
+		// session验证
+		const sessionId = ctx.cookies.get('sessionId');
+		const sessionObj = session.get(sessionId); // 如果获取一直为空，要看下是否服务器重启过，缓存清空了
+		if (!sessionObj || !sessionObj.userId) {
+			throw new Error('没有找到相应的session');
 		}
+		userId = sessionObj.userId;
 
 		const result = await query(
 			`insert into comment(userId,postId,content,createdAt) values("${userId}", "${data.postId}", "${data.content}",${connection.escape(new Date())})`

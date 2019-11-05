@@ -171,6 +171,10 @@ http头字段来进行限制
 
 	改进：userId+签名，通过node自带的模块 crypt 进行加密
 
+使用sessionId
+
+	注意点：需要把sessionId存放到外部文件或则`数据库`中，否则服务器重启之后，内存中的cookie就消失了（cookie不会，因为cookie可以来自http头）
+
 
 
 
