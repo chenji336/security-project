@@ -136,8 +136,10 @@ exports.post = async function(ctx, next){
 		comments.forEach(comment => {
 			comment.content = xssFilter(comment.content);
 		});
+		const csrfToken = Math.floor(Math.random() * 999999, 10);
+		ctx.cookies.set('csrfToken', csrfToken); // 这个不建议放到cookie里面，而是保存在缓存中更好，而且每个用户token都不一样（演示先这样）
 		if(post){
-			ctx.render('post', {post, comments});
+			ctx.render('post', {post, comments, csrfToken});
 		}else{
 			ctx.status = 404;
 		}
@@ -162,13 +164,23 @@ exports.addComment = async function(ctx, next){
 		const connection = connectionModel.getConnection();
 		const query = bluebird.promisify(connection.query.bind(connection));
 		const userId = ctx.cookies.get('userId') || -1;
-		const captchaContent = data.captcha;
 
 		// 如果验证码是空或则重来没有访问过验证码也是错误
-		if (!captchaContent || !captcha.validateCaptcha(userId, captchaContent)) {
-			console.log('captchaContent', captchaContent);
-			throw new Error('发送的验证码错误');
+		// const captchaContent = data.captcha;
+		// if (!captchaContent || !captcha.validateCaptcha(userId, captchaContent)) {
+		// 	console.log('captchaContent', captchaContent);
+		// 	throw new Error('发送的验证码错误');
+		// }
+
+		// token验证
+		const csrfToken = data.csrfToken;
+		if (!csrfToken) {
+			throw new Error('token不能为空');
 		}
+		if (csrfToken !== ctx.cookies.get('csrfToken')) {
+			throw new Error('token不正确');
+		}
+
 		const result = await query(
 			`insert into comment(userId,postId,content,createdAt) values("${userId}", "${data.postId}", "${data.content}",${connection.escape(new Date())})`
 		);

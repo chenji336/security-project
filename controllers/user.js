@@ -22,7 +22,7 @@ exports.doLogin = async function(ctx, next){
 			// 登录成功，设置cookie
 			ctx.cookies.set('userId', user.id, {
 				httpOnly:false,
-				sameSite: 'strict' // 只有同网站的请求才可以发送cookie
+				// sameSite: 'strict' // 只有同网站的请求才可以发送cookie, safari可以验证
 			});
 
 			ctx.body = {

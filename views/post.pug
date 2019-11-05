@@ -28,9 +28,15 @@ html
 												input(name="username",placeholder="名字")
 											.input-field
 												textarea(placeholder="内容",name="content",class="materialize-textarea")
+
+											//- 验证码
+											//- .input-field
+											//- 	textarea(placeholder="验证码",name="captcha",class="materialize-textarea")
+											//- 	img(src="/captcha")
+
+											//- token，默认应该隐藏 hidden=true
 											.input-field
-												textarea(placeholder="验证码",name="captcha",class="materialize-textarea")
-												img(src="/captcha")
+												input(value=csrfToken,name="csrfToken")
 											.input-field
 												button.waves-effect.waves-light.btn 发表
 								each comment in comments
