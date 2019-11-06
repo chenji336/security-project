@@ -175,6 +175,14 @@ http头字段来进行限制
 
 	注意点：需要把sessionId存放到外部文件或则`数据库`中，否则服务器重启之后，内存中的cookie就消失了（cookie不会，因为cookie可以来自http头）
 
+#### cookie-安全策略
+
+- 签名防篡改（userId + sign)
+- 私有变化（加密） 也是本commit的主要内容
+- http-only
+- secure
+- samesite
+
 
 
 
