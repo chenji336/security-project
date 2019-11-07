@@ -197,6 +197,17 @@ http头字段来进行限制
 2. iframe下面有一个诱惑点击的页面（或则图片），诱惑按钮跟iframe评论群按钮重叠
 3. 点击 诱惑按钮 就相当于点击了 评论按钮
 
+#### 防御劫持
+
+js防御：
+
+top.location != window.location 然后跳转到window.location
+漏洞：劫持者可以设置 sandbox="allow-forms",只允许iframe执行form表单提交，其他的js不执行
+
+http防御：
+
+设置X-Frame-Options: DENY
+
 
 
 

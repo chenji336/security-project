@@ -10,6 +10,7 @@ router.all('/*', async function(ctx, next){
 	console.log('enter site.js');
 	ctx.set('X-XSS-Protection', 0); // 关闭浏览器的XSS拦截,safari能很好看到这个header的效果
 	// ctx.set('Content-Security-Policy', `default-src 'self'`); // 不允许外界的js加载以及插入的js的运行
+	ctx.set('X-Frame-Options','DENY');
 	await next();
 });
 
