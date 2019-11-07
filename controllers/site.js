@@ -187,11 +187,11 @@ exports.addComment = async function(ctx, next){
 		// }
 
 		// referer验证
-		const referer = ctx.request.headers.referer;
-		console.log('referer:', referer);
-		if (!/^https?:\/\/localhost/.test(referer)) {
-			throw new Error('referer来源错误');
-		}
+		// const referer = ctx.request.headers.referer;
+		// console.log('referer:', referer);
+		// if (!/^https?:\/\/localhost/.test(referer)) {
+		// 	throw new Error('referer来源错误');
+		// }
 
 		// cookie验证是否串改
 		// 如果前端修改了cookie，那么ctx.cookies也是被修改的，所以可以获取到修改后的userId
@@ -205,6 +205,7 @@ exports.addComment = async function(ctx, next){
 		// session验证
 		const sessionId = ctx.cookies.get('sessionId');
 		const sessionObj = session.get(sessionId); // 如果获取一直为空，要看下是否服务器重启过，缓存清空了
+		console.log('sessionObj', sessionObj);
 		if (!sessionObj || !sessionObj.userId) {
 			throw new Error('没有找到相应的session');
 		}

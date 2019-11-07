@@ -46,6 +46,7 @@ html
 										a(href="/post/"+comment.postId) #{comment.postTitle}
 		script(src="/jspm_packages/system.js")
 		script(src="/config.js")
+		script(src="/alert.js")
 		script.
 			var from = !{fromForJs} // 最开始的时候有双引号 fromForJs,为了更好验证JSON.stringify;这个还是有些问题专程string
 			console.log('fromForJs:', from)
