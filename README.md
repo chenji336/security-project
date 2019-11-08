@@ -1,5 +1,8 @@
 # 学习关于安全方面的前端知识
+
 [课程来源](https://coding.imooc.com/class/chapter/104.html#Anchor)
+[crypto涉及到的一些加密算法](https://www.liaoxuefeng.com/wiki/1022910821149312/1023025778520640)
+
 ## 环境搭建
 
 #### 安装mysql
@@ -121,7 +124,7 @@ http头字段来进行限制
 - 如果后台set-cookie,portal不同也不会设置成功
 - 如果前端设置了document.cookie,端口不同也可以共享
 
-### CSRF防御-验证码
+#### CSRF防御-验证码
 
 原理：
 
@@ -132,13 +135,13 @@ http头字段来进行限制
 
 如何攻击：攻击者可以提供验证码让客户去输入，不过这样成本就增加了
 
-### CSRF防御-token
+#### CSRF防御-token
 
 验证码缺点：客户每次都需要输入，还有可能输错，体验不好
 
 原理：同验证码，只是每次都不需要客户自己输入了
 
-### CSRF防御-referer
+#### CSRF防御-referer
 
 验证发送请求的来源，通过 `request.headers.referer` 判断
 
@@ -228,6 +231,28 @@ traceroute 查看所有经过的链路
   作用：直接替换线上js，查看修改后的结果是否正确
 - 改变request和response：右键 breakPoint,然后请求就会中断
   作用：测试不同参数的数据
+
+#### https原理
+
+在传输过程中加密链路中间层，到达目的之后进行解密
+
+http+tls(ssl),tls比ssl添加了更多的特性，但是不做严格的区分
+- tls：transform layer security
+- ssl: secure socket layer
+
+[CA详细介绍](https://www.cnblogs.com/handsomeBoys/p/6556336.html)
+ca: Certificate Authority（证书授权）
+
+#### https本地部署
+
+通过openssl进行本地部署:
+1. ~~openssl req -x509 -newkey rsa:2048 -nodes -sha256 -keyout localhost-privkey-new.pem -out localhost-cert-new.pem~~
+   openssl req -x509 -newkey rsa:2048 -nodes -sha256 -config req.cnf -keyout localhost-privkey-secure.pem -out localhost-cert-secure.pem
+   增加了`-config req.cnf`,配置了域名，否则浏览器一直提示不安全
+2. 在server.js中绑定生成好的 密钥localhost-privkey-secure.pem 和 证书localhost-cert-secure.pem
+   如果使用nginx配置参考 `/Users/liulei/Documents/GitHub/http/http-node/nginx.conf`
+3. 打开keychain,添加localhost-cert-secure.pem，右键标明为信任
+4. 打开charles窃听，发现https窃听不到（前提是本地没有信任了charles的证书）
 
 
 
