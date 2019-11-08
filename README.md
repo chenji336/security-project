@@ -254,6 +254,18 @@ ca: Certificate Authority（证书授权）
 3. 打开keychain,添加localhost-cert-secure.pem，右键标明为信任
 4. 打开charles窃听，发现https窃听不到（前提是本地没有信任了charles的证书）
 
+#### https生产环境部署
+
+使用：https://www.sslforfree.com/
+
+手动部署：
+1. 添加给出的文件，添加到服务器指定位置，证明了你是服务器拥有者
+2. 通过`服务器域名+路径`访问刚刚添加的文件，可以访问证明成功
+3. 下载需要的 证书 和 密钥
+4. 剩下步骤参考本地部署
+
+自动部署：通过给定的命令即可（命令有些参数需要自己修改）
+
 
 
 
