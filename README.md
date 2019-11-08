@@ -256,7 +256,13 @@ ca: Certificate Authority（证书授权）
 
 #### https生产环境部署
 
-使用：https://www.sslforfree.com/
+实例解析：
+- 访问 https://www.toobug.net/
+- 打开chrome控制台-security,点击 View certificate,查看该网站是被哪个机构颁发的证书
+- 打开appchain，查看是不是有相应的证书
+
+上面网站使用的证书是 `DST Root CA X3` 下属机构 `Let's Encrypt Authority X3` 颁发的，这是个免费的机构，很nice
+大家通过 https://www.sslforfree.com/ 就可以给自己的网站添加证书
 
 手动部署：
 1. 添加给出的文件，添加到服务器指定位置，证明了你是服务器拥有者
