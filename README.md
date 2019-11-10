@@ -24,6 +24,7 @@ mysql在系统偏好里面可以看到（或则全局搜索mysql）
 
 **引入外部的sql进入**：
 ./mysql safety -uroot< /Users/liulei/Documents/GitHub/security/mk-project/safety.sql
+导入的数据库.user 密码都是123456（后续因为加密密码，所以数据库看不出来）
 
 **sql常用命令（进入mysql命令之后）**
 show databases;
@@ -343,6 +344,14 @@ md5破解：彩虹表
 - 微博
 - csdn，这个是有承认的，不过也是说老用户的明文已经转密文，只是数据库没有保存而已
 
+#### 密码加固
+
+数据库加盐字段：ALTER TABLE `user` ADD COLUMN `salt` varchar(64) NULL DEFAULT '' AFTER `password`;
+
+> user salt 和 password 这些字段修改的时候需要使用 `` ，使用引号会报错
+
+1. 如果之前有salt，则直接比较加密后的是否正确
+2. 如果之前没有salt，则添加salt和更新密码
 
 
 

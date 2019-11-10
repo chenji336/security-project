@@ -22,22 +22,22 @@ routes.forEach((route) => {
 });
 
 // http 启动
-// app.listen(8080, function(){
-// 	console.log('App is listening on port 8080');
-// });
+app.listen(8080, function(){
+	console.log('App is listening on port 8080');
+});
 
 // https 启动
-const https = require('https');
-const fs = require('fs');
-// 不安全，在生成证书的时候没有配置域名
-// const options = {
-// 	key: fs.readFileSync('/usr/local/etc/nginx/certs/localhost-privkey-new.pem'),
-// 	cert: fs.readFileSync('/usr/local/etc/nginx/certs/localhost-cert-new.pem')
+// const https = require('https');
+// const fs = require('fs');
+// // 不安全，在生成证书的时候没有配置域名
+// // const options = {
+// // 	key: fs.readFileSync('/usr/local/etc/nginx/certs/localhost-privkey-new.pem'),
+// // 	cert: fs.readFileSync('/usr/local/etc/nginx/certs/localhost-cert-new.pem')
+// // };
+// // 安全,访问的链接必须是：https://a.test.com:8080,通过 https://localhost:8080 也会提示不安全
+// const optionsSecure = {
+// 	key: fs.readFileSync('./localhost-privkey-secure.pem'),
+// 	cert: fs.readFileSync('./localhost-cert-secure.pem')
 // };
-// 安全,访问的链接必须是：https://a.test.com:8080,通过 https://localhost:8080 也会提示不安全
-const optionsSecure = {
-	key: fs.readFileSync('./localhost-privkey-secure.pem'),
-	cert: fs.readFileSync('./localhost-cert-secure.pem')
-};
-https.createServer(optionsSecure, app.callback()).listen(8080);
-console.log('https server is running on port 8080');
+// https.createServer(optionsSecure, app.callback()).listen(8080);
+// console.log('https server is running on port 8080');

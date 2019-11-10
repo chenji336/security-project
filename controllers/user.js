@@ -2,24 +2,42 @@ const bluebird = require('bluebird');
 const connectionModel = require('../models/connection');
 const crypt = require('../tools/crypt');
 const session = require('../tools/session');
+const password = require('../tools/password');
 
-exports.login = async function(ctx, next){
+exports.login = async function (ctx, next) {
 	ctx.render('login');
 };
 
-exports.doLogin = async function(ctx, next){
-	try{
+exports.doLogin = async function (ctx, next) {
+	try {
 
 		const data = ctx.request.body;
 		const connection = connectionModel.getConnection();
 		const query = bluebird.promisify(connection.query.bind(connection));
 		const results = await query(
 			`select * from user where
-			username = '${data.username}'
-			and password = '${data.password}'`
+			username = '${data.username}'`
 		);
-		if(results.length){
+
+		if (results.length) {
 			let user = results[0];
+
+			// salt是空
+			// 需要更新salt并且更新password
+			if (!user.salt) {
+				const salt = password.getSalt();
+				const newPassword = password.encryptPassword(salt, user.password);
+				console.log(`update user set salt = '${salt}', password = '${newPassword}' where username='${data.username}'`);
+				await query(
+					`update user set salt = '${salt}', password = '${newPassword}' where username='${data.username}'`
+				);
+				user.salt = salt;
+				data.password = user.password;
+			}
+			const encryptedPassword = password.encryptPassword(user.salt, data.password);
+			if (encryptedPassword !== user.password) {
+				throw new Error('密码输入错误');
+			}
 
 			// sessionId相关
 			const sessionId = session.set({
@@ -44,17 +62,17 @@ exports.doLogin = async function(ctx, next){
 
 			ctx.body = {
 				status: 0,
-				data:{
+				data: {
 					id: user.id,
 					name: user.name
 				}
 			};
-		}else{
+		} else {
 			throw new Error('登录失败');
 		}
 
 		connection.end();
-	}catch(e){
+	} catch (e) {
 		console.log('[/user/login] error:', e.message, e.stack);
 		ctx.body = {
 			status: e.code || -1,
