@@ -34,7 +34,7 @@ const fs = require('fs');
 // 	key: fs.readFileSync('/usr/local/etc/nginx/certs/localhost-privkey-new.pem'),
 // 	cert: fs.readFileSync('/usr/local/etc/nginx/certs/localhost-cert-new.pem')
 // };
-// 安全
+// 安全,访问的链接必须是：https://a.test.com:8080,通过 https://localhost:8080 也会提示不安全
 const optionsSecure = {
 	key: fs.readFileSync('./localhost-privkey-secure.pem'),
 	cert: fs.readFileSync('./localhost-cert-secure.pem')
