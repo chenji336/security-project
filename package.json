@@ -34,7 +34,8 @@
     },
     "dependencies": {
       "axios": "npm:axios@^0.16.0",
-      "form-serialize": "npm:form-serialize@^0.7.1"
+      "form-serialize": "npm:form-serialize@^0.7.1",
+      "md5": "npm:md5@^2.2.1"
     },
     "devDependencies": {}
   }

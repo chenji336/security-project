@@ -21,20 +21,21 @@ exports.doLogin = async function (ctx, next) {
 
 		if (results.length) {
 			let user = results[0];
-
+			let encryptedPassword;
 			// salt是空
 			// 需要更新salt并且更新password
 			if (!user.salt) {
 				const salt = password.getSalt();
-				const newPassword = password.encryptPassword(salt, user.password);
-				console.log(`update user set salt = '${salt}', password = '${newPassword}' where username='${data.username}'`);
+				const newPassword = password.encryptClientPassword(user.username, user.password);
+				encryptedPassword = password.encryptPassword(salt, newPassword);
 				await query(
-					`update user set salt = '${salt}', password = '${newPassword}' where username='${data.username}'`
+					`update user set salt = '${salt}', password = '${encryptedPassword}' where username='${data.username}'`
 				);
 				user.salt = salt;
-				data.password = user.password;
+				data.password = newPassword;
+				user.password = encryptedPassword;
 			}
-			const encryptedPassword = password.encryptPassword(user.salt, data.password);
+			encryptedPassword = password.encryptPassword(user.salt, data.password);
 			if (encryptedPassword !== user.password) {
 				throw new Error('密码输入错误');
 			}
