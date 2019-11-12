@@ -403,6 +403,44 @@ md5破解：彩虹表
 
 课程使用的是mysql数据库
 
+#### SQL注入
+
+跟XSS很像：数据变成了程序的一部分
+
+select * from user where id = ${id}
+
+输入：`1 or 1 = 1` ，就会查出所有的数据
+
+sql注入的前置知识：
+
+- select * from table where id = 1 or 1 = 1
+- select id,1,2 from table `猜测column的名称，猜错就会报错`
+- select * from table union select 1,2,3 from table `猜测columns的列数，如果union前面是空，那么union可以让其有数据`
+- select * from table where id =1 and mid(version(),1,1)=5 `猜测mysql版本号,然后知道该版本的漏洞就可以进行攻击`
+
+#### SQL注入危害
+
+`http://localhost:8080/post/15" or "1"="1` 导致访问的不是id=15这篇文章，这样我就可能访问之前没有权限的文章了
+
+`http://localhost:8080/post/115" and "1"="1" union select 1,username,3,password,5,6 from user where "1"="1`
+- 115这个postId不存在
+- 通过union让这个查询条件可以查出东西
+- 可以猜测表名、字段以及个数等
+导致结果：可以在界面上看到用户名和密码
+
+sql危害：
+- 猜解密码
+- 获取数据
+- 删除表
+- 拖库（获取库里面所有数据）
+
+#### SQL注入案例
+
+- 腾讯的h5校招页面，可以通过 `or 1=1` 获取到别人信息
+- 阿里旗下的分站，可以通过 `mid(version(),1,1)` 猜测数据库版本
+- 微博也出现过
+
+
 
 
 
