@@ -38,6 +38,10 @@ create table test(id int);
 drop table test; 删除表
 exit; 退出项目
 
+查看columns:
+- show columns from t_table;
+- describe t_table;
+
 #### 安装执行
 
 1. npm i -g jspm
@@ -390,6 +394,14 @@ md5破解：彩虹表
 - 私密性（容易泄漏，比如指纹）
 - 碰撞性（如果我受伤了，那我人脸识别还是不是我）
 - 唯一性（我密码泄漏了，但是不能更改）
+
+## 接入层注入问题
+
+#### 关系型数据库
+
+表之间可以很好的关联（就是有关系，这也是关系型数据库的名字来源）
+
+课程使用的是mysql数据库
 
 
 
