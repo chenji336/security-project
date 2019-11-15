@@ -125,11 +125,17 @@ exports.post = async function(ctx, next){
 	try{
 		console.log('enter post');
 
-		const id = ctx.params.id;
+		// 检查数据类型
+		let id = ctx.params.id;
+		// id = parseInt(id, 10); // 因为要验证转义，所以注释掉检查数据类型
+		// console.log('id:', id);
 		const connection = connectionModel.getConnection();
-		const query = bluebird.promisify(connection.query.bind(connection));
+		// const query = bluebird.promisify(connection.query.bind(connection));
+		const query = bluebird.promisify(connection.execute.bind(connection)); // mysql2参数化查询
+		// console.log('connection.escape(id):', connection.escape(id)); // 转义之后很安全，数据也能查到
 		const posts = await query(
-			`select * from post where id = "${id}"`
+			// `select * from post where id = ${connection.escape(id)}`
+			`select * from post where id = ?`,[id] // 等价上面一句（mysql2的参数化查询也是这样的）
 		);
 		let post = posts[0];
 		const comments = await query(
@@ -151,9 +157,11 @@ exports.post = async function(ctx, next){
 		connection.end();
 	}catch(e){
 		console.log('[/site/post] error:', e.message, e.stack);
+
+		// 关闭错误输出
 		ctx.body = {
-			status: e.code || -1,
-			body: e.message
+			status: -1,
+			body: '出错了'
 		};
 	}
 };

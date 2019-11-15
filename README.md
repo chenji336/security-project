@@ -440,6 +440,31 @@ sql危害：
 - 阿里旗下的分站，可以通过 `mid(version(),1,1)` 猜测数据库版本
 - 微博也出现过
 
+#### SQL注入防御
+
+- 关闭错误输出
+- 检查数据类型
+- 对数据进行转义（跟xss转义很像），但是还是有可能被sql变种绕过
+- 参数化查询（需要 npm i -S mysql2）
+  1. 告诉mysql，我需要一个查询了，参数等一下在告诉你
+	2. 传递参数（这样就杜绝了注入攻击）
+
+**参数化查询是最彻底、最安全的防御方法，其他方法都可能有漏网之鱼**
+
+验证我到底是不是使用了参数化查询了，可以使用抓包工具 wire（这个mac和window都有），可以玩一下
+
+- 选择协议
+  - 外网：wifi en0
+	- 本地：loopback lo0(mysql安装在本地，所以我们选择这个)
+- 过滤关键字：mysql
+  - info选择：
+	  1. Request prepare Statement(预备的语句：确定查询主体) `select * from post where id = ?`
+		2. Request execute statement(正在执行的语句：传递参数) `parameter-value: 115 or 1=1`
+
+如果用的不是参数话查询
+- info选择(就一个)
+  - Request:query `select * from post where id = '115 or 1=1'`
+
 
 
 
