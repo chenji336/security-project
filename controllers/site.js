@@ -3,6 +3,8 @@ const connectionModel = require('../models/connection');
 const captcha = require('../tools/captcha');
 const crypt = require('../tools/crypt');
 const session = require('../tools/session');
+const Post = require('../models/post');
+const Comment = require('../models/commnet');
 
 // 转译HTML内容
 function escapeHtml (str) {
@@ -133,14 +135,22 @@ exports.post = async function(ctx, next){
 		// const query = bluebird.promisify(connection.query.bind(connection));
 		const query = bluebird.promisify(connection.execute.bind(connection)); // mysql2参数化查询
 		// console.log('connection.escape(id):', connection.escape(id)); // 转义之后很安全，数据也能查到
-		const posts = await query(
-			// `select * from post where id = ${connection.escape(id)}`
-			`select * from post where id = ?`,[id] // 等价上面一句（mysql2的参数化查询也是这样的）
-		);
-		let post = posts[0];
-		const comments = await query(
-			`select comment.*,user.username from comment left join user on comment.userId = user.id where postId = "${post.id}" order by comment.createdAt desc`
-		);
+		// const posts = await query(
+		// 	// `select * from post where id = ${connection.escape(id)}`
+		// 	`select * from post where id = ?`,[id] // 等价上面一句（mysql2的参数化查询也是这样的）
+		// );
+		// let post = posts[0];
+
+		// 又安全又简洁
+		let post = await Post.findById(id);
+		// const comments = await query(
+		// 	`select comment.*,user.username from comment left join user on comment.userId = user.id where postId = "${post.id}" order by comment.createdAt desc`
+		// );
+		const comments = await Comment.findAll({ // left join 和 order没有执行
+			where: {
+				postId: post.id
+			}
+		});
 		comments.forEach(comment => {
 			comment.content = xssFilter(comment.content);
 		});
