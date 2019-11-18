@@ -493,6 +493,27 @@ mongodb使用mongoose，类似于 ORM
 - 对类型进行转换
 - 写完整的条件
 
+## 接入层上传问题
+
+#### 上传问题
+
+上传的文件被当作程序来执行
+
+在php中很常见，在node中是不常见的
+
+前提：上传的是服务端执行文件
+php：可以直接访问到上传的文件，比如public里面上传php文件，就可以直接在域名后面加上文件名访问
+node：需要在路由中指定（静态文件不在讨论内）
+
+#### 上传漏洞演示
+
+因为我们node默认情况下是没有该上传漏洞的，所以我们会模拟一个（php就不需要去模拟）
+
+- npm i -S koa-body(注意v3 和 v4版本区别)
+- 获取body，并且mv 文件到 static/upload/xxx
+- data.fields.content += `<img src=${xxxx}>`
+- 模拟执行nodejs的函数 run = child_process.fork(记得silent:true)
+- 上传 js，打印出所有目录文件
 
 
 

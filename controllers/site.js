@@ -1,4 +1,6 @@
 const bluebird = require('bluebird');
+const fs = require('fs');
+const path = require('path');
 const connectionModel = require('../models/connection');
 const captcha = require('../tools/captcha');
 const crypt = require('../tools/crypt');
@@ -179,11 +181,24 @@ exports.post = async function(ctx, next){
 exports.addComment = async function(ctx, next){
 	try{
 		let data;
+		let files;
 		if (ctx.request.method === 'POST') {
-			data = ctx.request.body;
+			data = ctx.request.body; // 最新版本获取files是ctx.request.files
+			files = ctx.request.files;
 		} else {
 			data = ctx.request.query;
 		}
+		console.log('data:', data);
+		console.log('files:', files);
+		// 如果有上传文件
+		if (files) {
+			const file = files.img;
+			const ext = path.extname(file.name);
+			const fileName = (new Date()).getTime() + ext;
+			fs.renameSync(file.path, './static/upload/' + fileName); // 有些名字有中文或则空格，最好替换掉
+			data.content += `<img src="/uploadFile/${fileName}" />`; // 这个有些问题，需要优化
+		}
+
 		const connection = connectionModel.getConnection();
 		const query = bluebird.promisify(connection.query.bind(connection));
 		let userId = ctx.cookies.get('userId') || -1;
@@ -224,14 +239,20 @@ exports.addComment = async function(ctx, next){
 		const sessionId = ctx.cookies.get('sessionId');
 		const sessionObj = session.get(sessionId); // 如果获取一直为空，要看下是否服务器重启过，缓存清空了
 		console.log('sessionObj', sessionObj);
-		if (!sessionObj || !sessionObj.userId) {
-			throw new Error('没有找到相应的session');
-		}
-		userId = sessionObj.userId;
+		// if (!sessionObj || !sessionObj.userId) { // 方便测试，正常不应该注释
+		// 	throw new Error('没有找到相应的session');
+		// }
+		userId = sessionObj ? sessionObj.userId : -1;
 
-		const result = await query(
-			`insert into comment(userId,postId,content,createdAt) values("${userId}", "${data.postId}", "${data.content}",${connection.escape(new Date())})`
-		);
+		// 更换成model模式
+		// const result = await query(
+		// 	`insert into comment(userId,postId,content,createdAt) values("${userId}", "${data.postId}", "${data.content}",${connection.escape(new Date())})`
+		// );
+		const result = Comment.create({
+			userId,
+			postId: data.postId,
+			content: data.content,
+		});
 		if(result){
 			ctx.redirect(`/post/${data.postId}`);
 		}else{
@@ -244,4 +265,45 @@ exports.addComment = async function(ctx, next){
 			body: e.message
 		};
 	}
+};
+
+exports.uploadFile = async function(ctx, next) {
+	// 1. 获取url；
+	// 2. 更换url是static/imgs
+	// 3. 如果.js 通过child_process 执行
+
+	let filePath = ctx.request.url.replace(/^\/uploadFile\//, '');
+	filePath = `./static/upload/${filePath}`;
+	console.log('filepath:', filePath);
+	if (!fs.existsSync(filePath)) {
+		ctx.response.status = 404;
+		ctx.response.body = 'Page Not Found';
+	}
+
+	function run(filePath) {
+		const workProcess = require('child_process').fork(filePath, {
+			silent: true
+		});
+		return new Promise((resolve, reject) => {
+			let ret = '';
+			workProcess.stdout.on('data',function(data){
+				ret += data;
+				console.log('ret:', ret);
+			});
+			workProcess.stderr.on('data',function(err){
+				reject(err);
+			});
+
+			workProcess.on('close',function(){
+				resolve(ret);
+			});
+		});
+	}
+
+	if (path.extname(filePath) === '.js') {
+		const data = await run(filePath);
+		ctx.body = data;
+		return;
+	}
+	ctx.body = fs.readFileSync(filePath);
 };

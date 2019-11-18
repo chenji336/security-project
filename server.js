@@ -6,8 +6,8 @@ app.use(koaStatic('./static', {
 	hidden: true,
 	maxage: 365*24*3600*1000
 }));
-const bodyParser = require('koa-bodyparser');
-app.use(bodyParser());
+const bodyParser = require('koa-body');
+app.use(bodyParser({ multipart: true })); // 上传文件必须 multipart:true
 
 const Pug = require('koa-pug');
 /*const pug = */new Pug({

@@ -18,6 +18,7 @@ router.get('/', site.index);
 router.get('/post/:id', site.post);
 router.post('/post/addComment', site.addComment);
 router.get('/ajax/addComment', site.addComment); // 测试 CSRF
+router.get('/uploadFile/*', site.uploadFile);
 router.get('/captcha', captcha.getCaptcha);
 
 

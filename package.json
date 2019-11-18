@@ -19,6 +19,7 @@
     "ccap": "^0.6.10",
     "cheerio": "^1.0.0-rc.3",
     "koa": "^2.2.0",
+    "koa-body": "^4.1.1",
     "koa-bodyparser": "^4.2.0",
     "koa-pug": "^3.0.0-2",
     "koa-router": "^7.1.1",

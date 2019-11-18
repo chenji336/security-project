@@ -22,13 +22,14 @@ html
 							ul
 								li.card.lighten-5
 									.card-content
-										form(name="commentForm",method="post",action="/post/addComment")
+										form(name="commentForm",method="post", enctype="multipart/form-data", action="/post/addComment")
 											input(name="postId",type="hidden",value=post.id)
 											//- .input-field
 												input(name="username",placeholder="名字")
 											.input-field
 												textarea(placeholder="内容",name="content",class="materialize-textarea")
-
+											.input-field
+												input(name="img", type="file")
 											//- 验证码
 											//- .input-field
 											//- 	textarea(placeholder="验证码",name="captcha",class="materialize-textarea")
